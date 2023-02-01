@@ -7,6 +7,8 @@ from models.user import User
 from models.profile import Profile
 from models.dietplanner import DietPlanner
 from models.diettype import DietType
+from models.goal import Goal
+from models.nutrition import Nutrition
 
 load_dotenv(path.join(getcwd(), '.env'))
 
@@ -44,7 +46,7 @@ def create_app():
         @app.route('/add_profile',methods =['POST'])
         def add_profile():
             username = request.args.get('username')
-            user = User.query.filter_by(username=username)
+            user = User.query.filter_by(username=username).first()
 
             profile_details = request.get_json()
 
@@ -102,6 +104,47 @@ def create_app():
                 db.session.add(new_diettype_details )
             db.session.commit()
             return jsonify(msg="Diet Type Added Successfully")
+        
+        #add goal
+        @app.route('/add_goal', methods = ['POST'])
+        def add_goal():
+            username = request.args.get('username')
+            user = User.query.filter_by(username=username).first()
+
+            goal_details = request.get_json()
+
+            new_goal_details = Goal(
+                morning_walk = goal_details["morning_walk"],
+                freehand_exercise = goal_details["freehand_exercise"],
+                yoga = goal_details["yoga"],
+                user_id = user.id
+            )
+            db.session.add(new_goal_details)
+            db.session.commit()
+            return "Your goal Added Successfully"
+
+        # add nutrition target
+        @app.route('/add_nutrition_target', methods = ['POST'])
+        def add_nutrition_target():
+            username = request.args.get('username')
+            user = User.query.filter_by(username=username).first()
+
+            nutrition_details = request.get_json()
+
+            for nutritions in nutrition_details["data"]:
+                new_nutritions_details =Nutrition (
+                    date = nutritions["date"],
+                    protein = nutritions["protein"],
+                    fat = nutritions["fat"],
+                    carbohydrate = nutritions["carbohydrate"],
+                    fiber = nutritions["fat"],
+                    sugar = nutritions["sugar"],
+                    user_id = user.id
+                )
+
+                db.session.add(new_nutritions_details )
+            db.session.commit()
+            return jsonify(msg="nutrition details Added Successfully")
 
         db.create_all()
         db.session.commit()
