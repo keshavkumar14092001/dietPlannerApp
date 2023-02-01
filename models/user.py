@@ -7,7 +7,9 @@ class User(db.Model):
     email = db.Column(db.String(200), nullable = False)
     password = db.Column(db.String(200), nullable = False)
     profile = db.relationship('Profile',backref = 'user')
-    diet_planner = db.relationship('Diet_Planner',backref = 'user')
-    diet_type = db.relationship('Diet_Type',backref = 'user')
+    dietplanner = db.relationship('DietPlanner',backref = 'user')
+    diettype = db.relationship('DietType',backref = 'user')
+    goal = db.relationship('Goal',backref = 'user')
+    nutrition = db.relationship('Nutrition',backref = 'user')
     
     
