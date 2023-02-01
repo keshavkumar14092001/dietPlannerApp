@@ -9,6 +9,5 @@ class User(db.Model):
     profile = db.relationship('Profile',backref = 'user')
     diet_planner = db.relationship('Diet_Planner',backref = 'user')
     diet_type = db.relationship('Diet_Type',backref = 'user')
-    report = db.relationship('Report',backref = 'user')
     
     

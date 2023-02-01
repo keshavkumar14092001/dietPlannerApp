@@ -93,6 +93,7 @@ def create_app():
             for diettype in diettype_details["data"]:
                 new_diettype_details = DietType(
                     foodtype = diettype["foodtype"],
+                    foodname = diettype["foodname"],
                     calorie = diettype["calorie"],
                     user_id = user.id
                 )
@@ -109,4 +110,4 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debyg=True)
+    app.run(debug=True)
