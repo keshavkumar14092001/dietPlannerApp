@@ -9,6 +9,7 @@ from models.dietplanner import DietPlanner
 from models.diettype import DietType
 from models.goal import Goal
 from models.nutrition import Nutrition
+import matplotlib.pyplot as plt
 
 load_dotenv(path.join(getcwd(), '.env'))
 
@@ -41,6 +42,19 @@ def create_app():
             db.session.commit()
 
             return "User added successfully"
+
+        # SignIN Functionality:
+        @app.route("/login", methods=['POST'])
+        def login():
+            data = request.form.to_dict(flat=True)
+            try:
+                user = User.query.filter_by(email=data['email']).first()
+                if user.verify_password(data['password']):
+                    return jsonify({'status':'success'})
+                else:
+                  return jsonify({'status': 'fail'})
+            except AttributeError:
+                return jsonify({'status':'email not found'})
 
         #Adding profile
         @app.route('/add_profile',methods =['POST'])
@@ -95,8 +109,7 @@ def create_app():
 
             for diettype in diettype_details["data"]:
                 new_diettype_details = DietType(
-                    foodtype = diettype["foodtype"],
-                    foodname = diettype["foodname"],
+                    day = diettype["day"],
                     calorie = diettype["calorie"],
                     user_id = user.id
                 )
@@ -145,6 +158,24 @@ def create_app():
                 db.session.add(new_nutritions_details )
             db.session.commit()
             return jsonify(msg="nutrition details Added Successfully")
+
+        # Showing daily report:
+        
+
+        @app.route('/show_daily_report', methods=['GET'])
+        def show_daily_report():
+            diet_types = DietType.query.all()
+            diet_type_calories = [(diet_type.calorie) for diet_type in diet_types]
+            days = [(diet_type.day) for diet_type in diet_types]
+
+           
+
+            plt.bar(days, diet_type_calories)
+            plt.title('Daily Calorie Intake Report')
+            plt.xlabel('Days')
+            plt.ylabel('Calories')
+            
+            return plt.show()
 
         db.create_all()
         db.session.commit()

@@ -11,5 +11,8 @@ class User(db.Model):
     diettype = db.relationship('DietType',backref = 'user')
     goal = db.relationship('Goal',backref = 'user')
     nutrition = db.relationship('Nutrition',backref = 'user')
+
+    def verify_password(self, passw):
+        return self.password==passw
     
     
